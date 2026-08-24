@@ -3,6 +3,12 @@
   "name": "클린 영상 다운로더 연결",
   "version": "2.3.0",
   "description": "영상 페이지에서 우클릭해 클린 영상 다운로더 앱으로 링크를 보냅니다.",
+  "homepage_url": "https://salkka-dev.github.io/clean-video-downloader/",
+  "icons": {
+    "16": "icon128.png",
+    "48": "icon128.png",
+    "128": "icon128.png"
+  },
   "permissions": [
     "contextMenus",
     "notifications"

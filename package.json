@@ -24,6 +24,7 @@
     "appId": "kr.cleanvideodownloader.desktop",
     "productName": "클린 영상 다운로더",
     "asar": true,
+    "afterPack": "scripts/after-pack.cjs",
     "directories": {
       "output": "release"
     },
@@ -53,7 +54,6 @@
     "mac": {
       "category": "public.app-category.utilities",
       "minimumSystemVersion": "12.0",
-      "identity": "-",
       "hardenedRuntime": true,
       "gatekeeperAssess": false,
       "entitlements": "build/entitlements.mac.plist",

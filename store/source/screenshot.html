@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <style>
+    @font-face{font-family:Pretendard;src:url('../../docs/fonts/Pretendard-Regular.otf')}@font-face{font-family:Pretendard;src:url('../../docs/fonts/Pretendard-Bold.otf');font-weight:700}
+    *{box-sizing:border-box}html,body{width:1280px;height:800px;margin:0;overflow:hidden}body{padding:42px;font-family:Pretendard,sans-serif;color:#ecf3ff;background:#06101d}.browser{position:relative;width:100%;height:100%;overflow:hidden;border:1px solid #263b5a;border-radius:22px;background:#0b1829;box-shadow:0 36px 90px rgba(0,0,0,.45)}.top{display:flex;align-items:center;gap:9px;height:58px;padding:0 20px;border-bottom:1px solid #26384f;background:#0e1b2b}.dot{width:11px;height:11px;border-radius:50%;background:#38485e}.dot.red{background:#df6469}.dot.yellow{background:#d7a34c}.dot.green{background:#39b77f}.address{margin-left:22px;width:710px;padding:10px 18px;border:1px solid #2a405e;border-radius:999px;background:#071320;color:#7f94b1;font-size:13px}.page{position:absolute;inset:58px 0 0;display:grid;place-items:center;background:radial-gradient(circle at 30% 20%,#173767,transparent 360px),linear-gradient(135deg,#0c1b2e,#07111e)}.video{position:relative;width:780px;height:440px;overflow:hidden;border-radius:18px;background:linear-gradient(135deg,#375d8f,#142a46);box-shadow:0 28px 70px rgba(0,0,0,.4);transform:translateY(48px)}.video:before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 28% 32%,#7ca2d3,transparent 170px),linear-gradient(165deg,transparent 54%,rgba(0,0,0,.38) 55%)}.play{position:absolute;left:50%;top:50%;width:74px;height:74px;transform:translate(-50%,-50%);border-radius:50%;background:rgba(255,255,255,.88)}.play:after{content:'';position:absolute;left:31px;top:23px;border-left:23px solid #1d4f96;border-top:14px solid transparent;border-bottom:14px solid transparent}.caption{position:absolute;left:24px;bottom:20px;color:#d7e4f8;font-size:14px}.context{position:absolute;right:105px;top:235px;width:310px;padding:10px;border:1px solid #354863;border-radius:13px;background:#111c2b;box-shadow:0 26px 60px rgba(0,0,0,.5)}.context .row{padding:13px 15px;border-radius:8px;color:#9eb0c7;font-size:13px}.context .row.active{display:flex;align-items:center;gap:10px;background:#2458c6;color:#fff;font-weight:700}.mini{width:22px;height:22px}.toast{position:absolute;right:92px;bottom:66px;display:flex;align-items:center;gap:12px;padding:16px 20px;border:1px solid rgba(55,208,165,.3);border-radius:12px;background:#0b2a28;color:#bcefe0;font-size:13px;box-shadow:0 20px 45px rgba(0,0,0,.35)}.toast b{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:#2acb9d;color:#052019}.hint{position:absolute;left:70px;top:18px;width:680px}.hint small{color:#5d84e8;font-size:11px;font-weight:700;letter-spacing:.18em}.hint h1{margin:10px 0 0;font-size:36px;letter-spacing:-.05em}.hint p{margin:8px 0 0;color:#8498b3;font-size:13px}
+  </style>
+</head>
+<body>
+  <main class="browser">
+    <div class="top"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span><div class="address">https://www.youtube.com/watch?v=example</div></div>
+    <div class="page">
+      <div class="hint"><small>CHROME CONTEXT MENU</small><h1>영상 또는 페이지에서 우클릭</h1><p>현재 링크만 내 컴퓨터의 클린 영상 다운로더 앱으로 전달합니다.</p></div>
+      <div class="video"><div class="play"></div><div class="caption">권한 있는 영상에서 사용하세요</div></div>
+      <div class="context">
+        <div class="row">새 탭에서 링크 열기</div><div class="row">링크 주소 복사</div>
+        <div class="row active"><img class="mini" src="icon128.svg" alt="">클린 영상 다운로더로 받기</div>
+      </div>
+      <div class="toast"><b>✓</b> 링크를 앱으로 보냈습니다.</div>
+    </div>
+  </main>
+</body>
+</html>

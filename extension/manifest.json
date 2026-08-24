@@ -1,0 +1,16 @@
+{
+  "manifest_version": 3,
+  "name": "클린 영상 다운로더 연결",
+  "version": "2.3.0",
+  "description": "영상 페이지에서 우클릭해 클린 영상 다운로더 앱으로 링크를 보냅니다.",
+  "permissions": [
+    "contextMenus",
+    "notifications"
+  ],
+  "host_permissions": [
+    "http://127.0.0.1:18223/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  }
+}

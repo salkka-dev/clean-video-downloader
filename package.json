@@ -1,7 +1,7 @@
 {
   "name": "clean-video-downloader",
   "productName": "클린 영상 다운로더",
-  "version": "2.3.0",
+  "version": "2.3.1",
   "description": "권한이 있는 온라인 영상을 Premiere 호환 MP4로 저장하는 데스크톱 앱",
   "main": "src/main.js",
   "author": "Clean Video Downloader",
@@ -89,6 +89,7 @@
     "nsis": {
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
+      "include": "build/installer.nsh",
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
       "shortcutName": "클린 영상 다운로더"

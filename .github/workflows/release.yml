@@ -22,13 +22,15 @@ jobs:
         include:
           - runner: windows-latest
             key: windows-x64
-            command: npx electron-builder --win nsis zip --x64 --publish never -c.win.signAndEditExecutable=true
+            command: npx electron-builder --win nsis zip --x64 --publish never
           - runner: macos-15
             key: mac-arm64
-            command: npx electron-builder --mac dmg zip --arm64 --publish never
+            command: npx electron-builder --mac zip --arm64 --publish never
+            dmg_arch: arm64
           - runner: macos-15-intel
             key: mac-x64
-            command: npx electron-builder --mac dmg zip --x64 --publish never
+            command: npx electron-builder --mac zip --x64 --publish never
+            dmg_arch: x64
     runs-on: ${{ matrix.runner }}
     steps:
       - uses: actions/checkout@v4
@@ -40,6 +42,15 @@ jobs:
       - run: npm test
       - run: npm run prepare:tools
       - run: ${{ matrix.command }}
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: "false"
+      - name: Create macOS DMG
+        if: startsWith(matrix.key, 'mac-')
+        shell: bash
+        run: |
+          app_path="$(find release -type d -name '*.app' -print | head -n 1)"
+          test -n "$app_path"
+          hdiutil create -volname "클린 영상 다운로더" -srcfolder "$app_path" -ov -format UDZO "release/Clean-Video-Downloader-mac-${{ matrix.dmg_arch }}.dmg"
       - name: Verify macOS signatures
         if: startsWith(matrix.key, 'mac-')
         shell: bash

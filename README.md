@@ -37,6 +37,8 @@ npm run build:win
 npm run build:mac
 ```
 
-macOS 빌드는 해당 Mac 아키텍처에서 실행하는 것을 권장합니다. 공개 배포용 무경고 실행은 Apple Developer ID 서명과 공증이 필요합니다. 현재 자동 빌드는 기존 v2.2의 완전 미서명 상태를 고쳐 ad-hoc 서명과 Electron 필수 entitlement를 적용하며, 최초 실행 시에는 macOS에서 사용자 승인이 필요할 수 있습니다.
+macOS 빌드는 해당 Mac 아키텍처에서 실행하는 것을 권장합니다. `electron-builder` 26.15.3 이상과 패키징 훅을 함께 사용해 macOS 26에서 앱이 시작 즉시 종료되는 Helper 경로 문제를 피합니다. Apple Silicon 빌드에는 ARM64 `ffprobe`가 포함됩니다.
+
+공개 배포에서 Gatekeeper 차단 경고를 없애려면 Apple Developer ID Application 서명과 Apple 공증이 필요합니다. Developer ID가 없는 로컬/ad-hoc 빌드는 기능 검증용으로만 사용하세요.
 
 Chrome 웹 스토어 공개 등록은 개발자 계정 등록과 심사가 별도로 필요합니다. `extension/` 폴더는 개발자 모드에서 바로 불러올 수 있습니다.

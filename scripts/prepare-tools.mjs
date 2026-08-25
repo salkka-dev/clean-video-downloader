@@ -2,7 +2,7 @@ import { chmod, copyFile, mkdir, rm } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import ffmpegPath from 'ffmpeg-static';
-import ffprobeStatic from 'ffprobe-static';
+import ffprobePath from '@derhuerst/ffprobe-static';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const destination = path.join(root, 'vendor', 'current');
@@ -30,7 +30,7 @@ const ffprobeDestination = path.join(destination, `ffprobe${executableSuffix}`);
 const ytDlpDestination = path.join(destination, `yt-dlp${executableSuffix}`);
 
 await copyFile(ffmpegPath, ffmpegDestination);
-await copyFile(ffprobeStatic.path, ffprobeDestination);
+await copyFile(ffprobePath, ffprobeDestination);
 await download(ytDlpUrl, ytDlpDestination);
 
 if (process.platform !== 'win32') {

@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "클린 영상 다운로더 연결",
-  "version": "2.3.0",
-  "description": "영상 페이지에서 우클릭해 클린 영상 다운로더 앱으로 링크를 보냅니다.",
+  "name": "클린 영상 다운로더",
+  "version": "2.4.0",
+  "description": "웹페이지의 영상·오디오·직접 미디어 링크를 Chrome에서 바로 저장합니다.",
   "homepage_url": "https://salkka-dev.github.io/clean-video-downloader/",
   "icons": {
     "16": "icon128.png",
@@ -11,11 +11,14 @@
   },
   "permissions": [
     "contextMenus",
-    "notifications"
+    "notifications",
+    "downloads",
+    "activeTab",
+    "scripting"
   ],
-  "host_permissions": [
-    "http://127.0.0.1:18223/*"
-  ],
+  "action": {
+    "default_title": "현재 페이지의 미디어 다운로드"
+  },
   "background": {
     "service_worker": "background.js"
   }

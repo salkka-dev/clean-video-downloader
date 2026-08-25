@@ -26,15 +26,16 @@
 
     <section>
       <h2>링크 처리 방식</h2>
-      <p>사용자가 우클릭 메뉴를 직접 선택했을 때 현재 페이지 또는 선택한 영상 링크만 사용자의 컴퓨터에서 실행 중인 클린 영상 다운로더 앱으로 전달합니다. 전송 대상은 로컬 주소 <code>127.0.0.1:18223</code>뿐이며, 개발자나 제3자의 서버로 전송되지 않습니다.</p>
+      <p>사용자가 우클릭 메뉴나 확장 아이콘을 직접 선택했을 때 현재 탭의 영상·오디오·직접 미디어 주소만 일시적으로 확인해 Chrome 다운로드를 시작합니다. 해당 주소와 페이지 내용은 저장하거나 개발자 또는 제3자의 서버로 전송하지 않습니다.</p>
     </section>
 
     <section>
       <h2>권한 사용 목적</h2>
       <ul>
-        <li><strong>contextMenus</strong>: 페이지·링크·영상 우클릭 메뉴를 제공합니다.</li>
-        <li><strong>notifications</strong>: 앱 전송 성공 또는 실행 필요 상태를 알립니다.</li>
-        <li><strong>127.0.0.1 접근</strong>: 사용자가 선택한 링크를 로컬 데스크톱 앱에 전달합니다.</li>
+        <li><strong>contextMenus</strong>: 페이지·링크·영상·오디오 우클릭 메뉴를 제공합니다.</li>
+        <li><strong>notifications</strong>: 다운로드 시작 또는 지원 불가 상태를 알립니다.</li>
+        <li><strong>downloads</strong>: 사용자가 선택한 미디어를 Chrome 다운로드로 저장합니다.</li>
+        <li><strong>activeTab·scripting</strong>: 사용자 동작 직후 현재 탭에서만 video·audio 요소와 직접 미디어 주소를 확인합니다.</li>
       </ul>
     </section>
 

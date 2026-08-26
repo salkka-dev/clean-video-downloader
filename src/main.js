@@ -6,6 +6,7 @@ const { app, BrowserWindow, dialog, ipcMain, session, shell } = require('electro
 const { spawnSync } = require('child_process');
 const { Downloader, validateUrls } = require('./lib/downloader');
 const { startExtensionBridge } = require('./lib/extension-bridge');
+const { parsePremiereProtocol, writeJobStatus } = require('./lib/premiere-bridge');
 const { checkForUpdate } = require('./lib/update');
 
 let mainWindow = null;
@@ -15,6 +16,8 @@ let bridgeServer = null;
 let rendererReady = false;
 let latestUpdate = null;
 const pendingUrls = [];
+const pendingPremiereJobs = [];
+let backgroundLaunch = false;
 
 function send(channel, value) {
   if (mainWindow && !mainWindow.isDestroyed()) mainWindow.webContents.send(channel, value);
@@ -37,8 +40,16 @@ function handleProtocolUrl(value) {
   try {
     const incoming = new URL(value);
     if (incoming.protocol !== 'cleanvideo:') return;
+    if (incoming.hostname === 'premiere') {
+      const job = parsePremiereProtocol(value);
+      backgroundLaunch = true;
+      if (app.isReady()) startPremiereJob(job);
+      else pendingPremiereJobs.push(job);
+      return 'premiere';
+    }
     const url = incoming.searchParams.get('url');
     if (url) queueUrl(url);
+    return 'queue';
   } catch (_) {}
 }
 
@@ -60,7 +71,7 @@ function prepareTools(directory) {
   }
 }
 
-function createWindow() {
+function createWindow({ showOnReady = true } = {}) {
   mainWindow = new BrowserWindow({
     width: 1020,
     height: 840,
@@ -89,7 +100,7 @@ function createWindow() {
     pendingUrls.splice(0).forEach(url => send('url:add', url));
     if (latestUpdate) send('update:available', latestUpdate);
   });
-  mainWindow.once('ready-to-show', () => mainWindow.show());
+  mainWindow.once('ready-to-show', () => { if (showOnReady) mainWindow.show(); });
   mainWindow.on('closed', () => {
     if (downloader) downloader.cancel();
     rendererReady = false;
@@ -108,6 +119,72 @@ async function tvcfCookieHeader() {
     .filter(cookie => /(^|\.)tvcf\.co\.kr$/i.test(cookie.domain || ''))
     .map(cookie => `${cookie.name}=${cookie.value}`)
     .join('; ');
+}
+
+function updatePremiereJob(job, patch) {
+  Object.assign(job, patch);
+  writeJobStatus(app.getPath('appData'), job);
+}
+
+function startPremiereJob(job) {
+  if (!job) return;
+  if (downloader && downloader.running) {
+    updatePremiereJob(job, {
+      status: 'failed',
+      progress: 0,
+      message: '다른 다운로드가 진행 중입니다. 잠시 후 다시 시도해 주세요.'
+    });
+    return;
+  }
+
+  const folder = path.join(app.getPath('videos'), 'Clean Video Downloader', 'Premiere');
+  updatePremiereJob(job, { status: 'queued', progress: 0, message: '데스크톱 앱에 연결했습니다.' });
+  setImmediate(async () => {
+    if (downloader && downloader.running) {
+      updatePremiereJob(job, {
+        status: 'failed',
+        progress: 0,
+        message: '다른 다운로드가 진행 중입니다. 잠시 후 다시 시도해 주세요.'
+      });
+      return;
+    }
+
+    try {
+      const directory = toolsDirectory();
+      prepareTools(directory);
+      fs.mkdirSync(folder, { recursive: true });
+      downloader = new Downloader({
+        toolsDir: directory,
+        onLog: text => updatePremiereJob(job, { message: String(text).trim().slice(-500) || '처리 중입니다.' }),
+        onProgress: progress => updatePremiereJob(job, { status: 'working', progress }),
+        onState: state => {
+          if (state === 'working') updatePremiereJob(job, { status: 'working', message: '영상을 다운로드하고 있습니다.' });
+        }
+      });
+      const files = await downloader.runAll([job.url], folder, {
+        quality: job.quality,
+        browser: 'none',
+        premiere: true,
+        subtitles: false,
+        thumbnail: false,
+        tvcfCookieHeader: await tvcfCookieHeader()
+      });
+      if (!files.length) throw new Error('영상 파일을 만들지 못했습니다. 데스크톱 앱에서 링크 권한과 로그를 확인해 주세요.');
+      updatePremiereJob(job, {
+        status: 'succeeded',
+        progress: 100,
+        message: 'Premiere 호환 MP4 준비가 끝났습니다.',
+        filePath: files[0]
+      });
+    } catch (error) {
+      updatePremiereJob(job, {
+        status: 'failed',
+        message: error && error.message ? error.message : '다운로드 작업에 실패했습니다.'
+      });
+    } finally {
+      downloader = null;
+    }
+  });
 }
 
 async function openTvcfLogin() {
@@ -228,8 +305,8 @@ if (!gotLock) {
   app.quit();
 } else {
   app.on('second-instance', (_event, argv) => {
-    argv.filter(value => /^cleanvideo:/i.test(value)).forEach(handleProtocolUrl);
-    if (mainWindow) {
+    const modes = argv.filter(value => /^cleanvideo:/i.test(value)).map(handleProtocolUrl);
+    if (mainWindow && !modes.includes('premiere')) {
       if (mainWindow.isMinimized()) mainWindow.restore();
       mainWindow.show();
       mainWindow.focus();
@@ -243,12 +320,20 @@ if (!gotLock) {
 
   app.whenReady().then(async () => {
     if (app.isPackaged) app.setAsDefaultProtocolClient('cleanvideo');
-    process.argv.filter(value => /^cleanvideo:/i.test(value)).forEach(handleProtocolUrl);
-    createWindow();
+    const startupUrls = process.argv.filter(value => /^cleanvideo:/i.test(value));
+    backgroundLaunch = backgroundLaunch || startupUrls.some(value => {
+      try { return new URL(value).hostname === 'premiere'; } catch (_) { return false; }
+    });
+    startupUrls.forEach(handleProtocolUrl);
+    createWindow({ showOnReady: !backgroundLaunch });
+    pendingPremiereJobs.splice(0).forEach(startPremiereJob);
     bridgeServer = startExtensionBridge(queueUrl);
     latestUpdate = await checkForUpdate(app.getVersion());
     if (latestUpdate && rendererReady) send('update:available', latestUpdate);
-    app.on('activate', () => { if (BrowserWindow.getAllWindows().length === 0) createWindow(); });
+    app.on('activate', () => {
+      if (BrowserWindow.getAllWindows().length === 0) createWindow();
+      else if (mainWindow) { mainWindow.show(); mainWindow.focus(); }
+    });
   });
 }
 

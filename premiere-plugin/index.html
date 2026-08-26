@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>클린 영상 다운로더</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="panel-shell">
+    <header class="brand">
+      <div class="brand-mark" aria-hidden="true"><span></span></div>
+      <div>
+        <p>CLEAN VIDEO</p>
+        <h1>링크에서 타임라인까지</h1>
+      </div>
+      <span class="version">1.0</span>
+    </header>
+
+    <section class="input-card">
+      <label for="video-url">영상 링크</label>
+      <textarea id="video-url" rows="4" spellcheck="false" placeholder="YouTube · Vimeo · Instagram · TVCF 개별 영상 링크"></textarea>
+      <p class="helper">직접 소유했거나 저장 권한을 받은 영상만 사용하세요.</p>
+    </section>
+
+    <section class="option-grid" aria-label="다운로드와 타임라인 옵션">
+      <label>
+        <span>화질</span>
+        <select id="quality">
+          <option value="1080">1080p</option>
+          <option value="best">최고 화질</option>
+          <option value="2160">4K 이하</option>
+          <option value="720">720p</option>
+        </select>
+      </label>
+      <label>
+        <span>삽입 위치</span>
+        <select id="insert-position">
+          <option value="playhead">현재 재생 헤드</option>
+          <option value="end">타임라인 끝</option>
+        </select>
+      </label>
+      <label>
+        <span>비디오 트랙</span>
+        <select id="video-track">
+          <option value="0">V1</option>
+          <option value="1">V2</option>
+          <option value="2">V3</option>
+        </select>
+      </label>
+      <label>
+        <span>오디오 트랙</span>
+        <select id="audio-track">
+          <option value="0">A1</option>
+          <option value="1">A2</option>
+          <option value="2">A3</option>
+        </select>
+      </label>
+    </section>
+
+    <section class="workflow">
+      <div class="workflow-step"><b>01</b><span>다운로드</span></div>
+      <i></i>
+      <div class="workflow-step"><b>02</b><span>MP4 변환</span></div>
+      <i></i>
+      <div class="workflow-step"><b>03</b><span>타임라인</span></div>
+    </section>
+
+    <button id="start-button" class="start-button" type="button">
+      <span>다운로드 → 타임라인 추가</span><b>↓</b>
+    </button>
+
+    <section id="status-card" class="status-card" aria-live="polite">
+      <div class="status-head"><span><i id="status-dot"></i><b id="status-title">준비됨</b></span><strong id="status-percent">0%</strong></div>
+      <div class="progress"><i id="progress-bar"></i></div>
+      <p id="status-message">Premiere 프로젝트와 시퀀스를 열고 링크를 입력하세요.</p>
+    </section>
+
+    <footer>
+      <span>H.264 · AAC · 48kHz</span>
+      <span>로컬 처리</span>
+    </footer>
+  </main>
+  <script src="main.js"></script>
+</body>
+</html>

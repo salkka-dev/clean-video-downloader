@@ -1,7 +1,7 @@
 {
   "name": "clean-video-downloader",
   "productName": "클린 영상 다운로더",
-  "version": "2.3.2",
+  "version": "2.4.0",
   "description": "권한이 있는 온라인 영상을 Premiere 호환 MP4로 저장하는 데스크톱 앱",
   "main": "src/main.js",
   "author": "Clean Video Downloader",
@@ -11,6 +11,7 @@
     "start": "electron .",
     "test": "node --test",
     "prepare:tools": "node scripts/prepare-tools.mjs",
+    "package:premiere": "node scripts/package-premiere.mjs",
     "build:win": "npm run prepare:tools && electron-builder --win nsis zip --x64",
     "build:mac": "npm run prepare:tools && electron-builder --mac dmg zip"
   },

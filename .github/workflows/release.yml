@@ -84,14 +84,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-      - run: npm ci
       - name: Package Chrome extension
-        run: npm run package:extension
+        run: |
+          mkdir -p release
+          (cd extension && zip -r ../release/Clean-Video-Downloader-Chrome.zip .)
+          cp release/Clean-Video-Downloader-Chrome.zip release/Clean-Video-Downloader-Chrome-v2.5.0.zip
       - name: Package Premiere all-in-one panel
-        run: npm run package:cep
+        run: |
+          chmod +x premiere-cep/install-mac.command
+          (cd premiere-cep && zip -r ../release/Clean-Video-Studio-Premiere.zip .)
+          cp release/Clean-Video-Studio-Premiere.zip release/Clean-Video-Studio-Premiere-v1.0.0.zip
       - uses: actions/upload-artifact@v4
         with:
           name: standalone-integrations

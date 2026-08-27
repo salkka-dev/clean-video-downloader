@@ -62,13 +62,21 @@ async function settle() {
 
 test('standalone manifest uses Chrome download permissions without a local app host', () => {
   const manifest = JSON.parse(fs.readFileSync(path.join(extensionDir, 'manifest.json'), 'utf8'));
-  assert.equal(manifest.version, '2.4.1');
-  assert.deepEqual(manifest.permissions.sort(), ['activeTab', 'contextMenus', 'downloads', 'notifications', 'scripting'].sort());
+  assert.equal(manifest.version, '2.5.0');
+  assert.deepEqual(manifest.permissions.sort(), ['activeTab', 'clipboardWrite', 'contextMenus', 'downloads', 'notifications', 'scripting'].sort());
   assert.equal(manifest.host_permissions, undefined);
   assert.equal(manifest.action.default_popup, 'popup.html');
   assert.equal(manifest.action.default_icon['16'], 'icon16.png');
   assert.doesNotMatch(fs.readFileSync(path.join(extensionDir, 'background.js'), 'utf8'), /cleanvideo:\/\//i);
   assert.equal(fs.existsSync(path.join(extensionDir, 'popup.html')), true);
+  assert.match(fs.readFileSync(path.join(extensionDir, 'background.js'), 'utf8'), /captureVisibleTab/);
+  assert.match(fs.readFileSync(path.join(extensionDir, 'popup.html'), 'utf8'), /스틸 복사/);
+});
+
+test('context menu exposes app-free media and frame actions', () => {
+  const extension = loadBackground();
+  extension.listeners.installed();
+  assert.deepEqual(extension.menus.map(menu => menu.id), ['clean-media-download', 'clean-frame-copy', 'clean-frame-save']);
 });
 
 test('context menu downloads a selected direct media URL', async () => {

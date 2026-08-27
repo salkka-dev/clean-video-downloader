@@ -17,6 +17,8 @@ button:hover { filter: brightness(1.08); }
 button:disabled { cursor: default; color: #72819a; background: #1b2d45; }
 #download-current { display: flex; align-items: center; justify-content: space-between; width: 100%; height: 40px; padding: 0 13px; }
 #download-current b { font-size: 16px; }
+.frame-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-top: 7px; }
+.frame-actions button { height: 34px; color: #bad0f3; background: #1c3555; font-size: 10px; }
 .hint { margin: 8px 0 0; color: #586f8f; font-size: 9px; }
 .direct-card div { display: grid; grid-template-columns: 1fr 58px; gap: 7px; }
 input { min-width: 0; height: 36px; padding: 0 10px; border: 1px solid #29415f; border-radius: 8px; outline: none; color: #e8f0fc; background: #091827; font-size: 10px; }

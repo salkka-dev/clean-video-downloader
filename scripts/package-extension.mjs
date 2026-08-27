@@ -10,7 +10,8 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const source = path.join(root, 'extension');
 const release = path.join(root, 'release');
 const output = path.join(release, 'Clean-Video-Downloader-Chrome.zip');
-const versionedOutput = path.join(release, 'Clean-Video-Downloader-Chrome-v2.4.1.zip');
+const manifest = JSON.parse(await import('node:fs/promises').then(module => module.readFile(path.join(source, 'manifest.json'), 'utf8')));
+const versionedOutput = path.join(release, `Clean-Video-Downloader-Chrome-v${manifest.version}.zip`);
 
 mkdirSync(release, { recursive: true });
 for (const file of [output, versionedOutput]) {

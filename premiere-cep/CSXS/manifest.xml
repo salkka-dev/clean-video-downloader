@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ExtensionManifest Version="7.0" ExtensionBundleId="kr.cleanvideostudio.cep" ExtensionBundleVersion="1.0.0" ExtensionBundleName="클린 비디오 스튜디오">
+  <ExtensionList>
+    <Extension Id="kr.cleanvideostudio.panel" Version="1.0.0" />
+  </ExtensionList>
+  <ExecutionEnvironment>
+    <HostList><Host Name="PPRO" Version="[22.0,99.9]" /></HostList>
+    <LocaleList><Locale Code="All" /></LocaleList>
+    <RequiredRuntimeList><RequiredRuntime Name="CSXS" Version="11.0" /></RequiredRuntimeList>
+  </ExecutionEnvironment>
+  <DispatchInfoList>
+    <Extension Id="kr.cleanvideostudio.panel">
+      <DispatchInfo>
+        <Resources>
+          <MainPath>./client/index.html</MainPath>
+          <ScriptPath>./host/index.jsx</ScriptPath>
+          <CEFCommandLine>
+            <Parameter>--enable-nodejs</Parameter>
+            <Parameter>--mixed-context</Parameter>
+            <Parameter>--allow-file-access-from-files</Parameter>
+          </CEFCommandLine>
+        </Resources>
+        <Lifecycle><AutoVisible>true</AutoVisible></Lifecycle>
+        <UI>
+          <Type>Panel</Type>
+          <Menu>클린 비디오 스튜디오</Menu>
+          <Geometry>
+            <Size><Width>390</Width><Height>720</Height></Size>
+            <MinSize><Width>310</Width><Height>520</Height></MinSize>
+            <MaxSize><Width>1600</Width><Height>1600</Height></MaxSize>
+          </Geometry>
+          <Icons>
+            <Icon Type="Normal">./client/icon.svg</Icon>
+            <Icon Type="DarkNormal">./client/icon.svg</Icon>
+          </Icons>
+        </UI>
+      </DispatchInfo>
+    </Extension>
+  </DispatchInfoList>
+</ExtensionManifest>

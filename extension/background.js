@@ -3,6 +3,8 @@
 importScripts('media-utils.js');
 
 const MENU_ID = 'clean-media-download';
+const COPY_FRAME_MENU_ID = 'clean-frame-copy';
+const SAVE_FRAME_MENU_ID = 'clean-frame-save';
 
 function setReadyBadge() {
   chrome.action.setBadgeBackgroundColor({ color: '#2f65ed' });
@@ -25,6 +27,16 @@ function installMenu() {
       id: MENU_ID,
       title: '클린 영상 다운로더로 저장',
       contexts: ['video', 'audio', 'link', 'page']
+    });
+    chrome.contextMenus.create({
+      id: COPY_FRAME_MENU_ID,
+      title: '현재 영상 프레임 복사',
+      contexts: ['video', 'page']
+    });
+    chrome.contextMenus.create({
+      id: SAVE_FRAME_MENU_ID,
+      title: '현재 영상 프레임 PNG 저장',
+      contexts: ['video', 'page']
     });
   });
 }
@@ -118,6 +130,94 @@ async function finish(result, notifyUser) {
   return result;
 }
 
+async function inspectVisibleVideo(tabId) {
+  const results = await chrome.scripting.executeScript({
+    target: { tabId },
+    func: () => {
+      const videos = [...document.querySelectorAll('video')]
+        .map(video => {
+          const rect = video.getBoundingClientRect();
+          const left = Math.max(0, rect.left);
+          const top = Math.max(0, rect.top);
+          const right = Math.min(innerWidth, rect.right);
+          const bottom = Math.min(innerHeight, rect.bottom);
+          return {
+            left,
+            top,
+            width: Math.max(0, right - left),
+            height: Math.max(0, bottom - top),
+            score: Math.max(0, right - left) * Math.max(0, bottom - top) + (video.paused ? 0 : 1_000_000_000),
+            title: document.title || 'video-frame'
+          };
+        })
+        .filter(item => item.width >= 80 && item.height >= 45)
+        .sort((a, b) => b.score - a.score);
+      return videos[0] ? { ...videos[0], viewportWidth: innerWidth, viewportHeight: innerHeight } : null;
+    }
+  });
+  return results[0]?.result || null;
+}
+
+async function blobToDataUrl(blob) {
+  const bytes = new Uint8Array(await blob.arrayBuffer());
+  let binary = '';
+  const chunk = 0x8000;
+  for (let index = 0; index < bytes.length; index += chunk) binary += String.fromCharCode(...bytes.subarray(index, index + chunk));
+  return `data:${blob.type || 'image/png'};base64,${btoa(binary)}`;
+}
+
+async function captureVideoFrame(tab) {
+  if (!tab?.id) throw new Error('현재 탭을 확인할 수 없습니다.');
+  const rect = await inspectVisibleVideo(tab.id);
+  if (!rect) throw new Error('화면에 보이는 영상을 찾지 못했습니다. 영상을 재생한 뒤 다시 시도해 주세요.');
+  const screenshot = await chrome.tabs.captureVisibleTab(tab.windowId, { format: 'png' });
+  const sourceBlob = await (await fetch(screenshot)).blob();
+  const bitmap = await createImageBitmap(sourceBlob);
+  const scaleX = bitmap.width / rect.viewportWidth;
+  const scaleY = bitmap.height / rect.viewportHeight;
+  const sourceX = Math.max(0, Math.round(rect.left * scaleX));
+  const sourceY = Math.max(0, Math.round(rect.top * scaleY));
+  const width = Math.min(bitmap.width - sourceX, Math.max(1, Math.round(rect.width * scaleX)));
+  const height = Math.min(bitmap.height - sourceY, Math.max(1, Math.round(rect.height * scaleY)));
+  const canvas = new OffscreenCanvas(width, height);
+  canvas.getContext('2d').drawImage(bitmap, sourceX, sourceY, width, height, 0, 0, width, height);
+  bitmap.close();
+  const dataUrl = await blobToDataUrl(await canvas.convertToBlob({ type: 'image/png' }));
+  return { dataUrl, title: rect.title };
+}
+
+async function saveCurrentFrame(tab, notifyUser = false) {
+  try {
+    const frame = await captureVideoFrame(tab);
+    await chrome.downloads.download({
+      url: frame.dataUrl,
+      filename: `${CleanMedia.safeBaseName(frame.title)} - frame.png`,
+      saveAs: true,
+      conflictAction: 'uniquify'
+    });
+    return finish({ ok: true, message: '현재 영상 프레임을 PNG로 저장합니다.' }, notifyUser);
+  } catch (error) { return finish({ ok: false, message: error.message || '현재 프레임을 저장하지 못했습니다.' }, notifyUser); }
+}
+
+async function copyCurrentFrame(tab, notifyUser = false) {
+  try {
+    const frame = await captureVideoFrame(tab);
+    const result = await chrome.scripting.executeScript({
+      target: { tabId: tab.id },
+      args: [frame.dataUrl],
+      func: async dataUrl => {
+        try {
+          const blob = await (await fetch(dataUrl)).blob();
+          await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+          return { ok: true };
+        } catch (error) { return { ok: false, message: error?.message || String(error) }; }
+      }
+    });
+    if (!result[0]?.result?.ok) throw new Error('Chrome이 이미지 클립보드 권한을 허용하지 않았습니다. PNG 저장을 사용해 주세요.');
+    return finish({ ok: true, message: '현재 영상 프레임을 이미지로 복사했습니다.' }, notifyUser);
+  } catch (error) { return finish({ ok: false, message: error.message || '현재 프레임을 복사하지 못했습니다.' }, notifyUser); }
+}
+
 async function downloadCandidate(candidate, tab, notifyUser = false) {
   const filename = CleanMedia.suggestFilename(candidate.title, candidate.url, candidate.kind, candidate.extension);
   if (CleanMedia.isBlobUrl(candidate.url)) {
@@ -170,6 +270,8 @@ async function saveMedia(info, tab, notifyUser = false) {
 
 chrome.contextMenus.onClicked.addListener((info, tab) => {
   if (info.menuItemId === MENU_ID) saveMedia(info, tab, true);
+  if (info.menuItemId === COPY_FRAME_MENU_ID) copyCurrentFrame(tab, true);
+  if (info.menuItemId === SAVE_FRAME_MENU_ID) saveCurrentFrame(tab, true);
 });
 
 chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
@@ -183,6 +285,10 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
     } else {
       operation = downloadCandidate({ url, kind: 'media', title: message.title || 'media' }, { id: message.tabId });
     }
+  } else if (message?.type === 'copy-current-frame') {
+    operation = copyCurrentFrame({ id: message.tabId, windowId: message.windowId });
+  } else if (message?.type === 'save-current-frame') {
+    operation = saveCurrentFrame({ id: message.tabId, windowId: message.windowId });
   } else {
     return false;
   }

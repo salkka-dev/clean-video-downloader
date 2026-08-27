@@ -6,7 +6,7 @@ on:
       release_tag:
         description: Release tag to create or update
         required: false
-        default: v2.3.2
+        default: v2.5.0
   push:
     tags:
       - "v*"
@@ -44,6 +44,18 @@ jobs:
       - run: ${{ matrix.command }}
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: "false"
+      - name: Stage plug-in engine files (Windows)
+        if: matrix.key == 'windows-x64'
+        shell: pwsh
+        run: |
+          Copy-Item vendor/current/yt-dlp.exe release/Clean-Video-Engine-windows-x64-yt-dlp.exe
+          Copy-Item vendor/current/ffmpeg.exe release/Clean-Video-Engine-windows-x64-ffmpeg.exe
+      - name: Stage plug-in engine files (macOS)
+        if: startsWith(matrix.key, 'mac-')
+        shell: bash
+        run: |
+          cp vendor/current/yt-dlp "release/Clean-Video-Engine-${{ matrix.key }}-yt-dlp"
+          cp vendor/current/ffmpeg "release/Clean-Video-Engine-${{ matrix.key }}-ffmpeg"
       - name: Create macOS DMG
         if: startsWith(matrix.key, 'mac-')
         shell: bash
@@ -65,18 +77,27 @@ jobs:
             release/*.exe
             release/*.zip
             release/*.dmg
+            release/Clean-Video-Engine-*
           if-no-files-found: error
 
   extension:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci
       - name: Package Chrome extension
-        run: cd extension && zip -r ../Clean-Video-Downloader-Chrome.zip .
+        run: npm run package:extension
+      - name: Package Premiere all-in-one panel
+        run: npm run package:cep
       - uses: actions/upload-artifact@v4
         with:
-          name: chrome-extension
-          path: Clean-Video-Downloader-Chrome.zip
+          name: standalone-integrations
+          path: |
+            release/Clean-Video-Downloader-Chrome*.zip
+            release/Clean-Video-Studio-Premiere*.zip
 
   publish:
     if: startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch'

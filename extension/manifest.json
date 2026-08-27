@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "클린 영상 다운로더",
-  "version": "2.4.1",
-  "description": "웹페이지의 영상·오디오·직접 미디어 링크를 Chrome에서 바로 저장합니다.",
+  "version": "2.5.0",
+  "description": "앱 없이 웹 영상·오디오를 저장하고 현재 영상 프레임을 복사하거나 PNG로 저장합니다.",
   "homepage_url": "https://salkka-dev.github.io/clean-video-downloader/",
   "icons": {
     "16": "icon16.png",
@@ -15,7 +15,8 @@
     "notifications",
     "downloads",
     "activeTab",
-    "scripting"
+    "scripting",
+    "clipboardWrite"
   ],
   "action": {
     "default_title": "클린 영상 다운로더",

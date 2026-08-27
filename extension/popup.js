@@ -4,6 +4,8 @@ const pageTitle = document.getElementById('page-title');
 const currentButton = document.getElementById('download-current');
 const directInput = document.getElementById('direct-url');
 const directButton = document.getElementById('download-url');
+const copyFrameButton = document.getElementById('copy-frame');
+const saveFrameButton = document.getElementById('save-frame');
 const status = document.getElementById('status');
 let activeTab = null;
 
@@ -29,7 +31,11 @@ async function initialize() {
   const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
   activeTab = tabs[0] || null;
   pageTitle.textContent = activeTab?.title || '현재 페이지를 확인할 수 없습니다.';
-  if (!activeTab?.id || !/^https?:/i.test(activeTab.url || '')) currentButton.disabled = true;
+  if (!activeTab?.id || !/^https?:/i.test(activeTab.url || '')) {
+    currentButton.disabled = true;
+    copyFrameButton.disabled = true;
+    saveFrameButton.disabled = true;
+  }
 }
 
 currentButton.addEventListener('click', () => run(currentButton, () => chrome.runtime.sendMessage({
@@ -50,7 +56,21 @@ directInput.addEventListener('keydown', event => {
   if (event.key === 'Enter') directButton.click();
 });
 
+copyFrameButton.addEventListener('click', () => run(copyFrameButton, () => chrome.runtime.sendMessage({
+  type: 'copy-current-frame',
+  tabId: activeTab?.id,
+  windowId: activeTab?.windowId
+})));
+
+saveFrameButton.addEventListener('click', () => run(saveFrameButton, () => chrome.runtime.sendMessage({
+  type: 'save-current-frame',
+  tabId: activeTab?.id,
+  windowId: activeTab?.windowId
+})));
+
 initialize().catch(() => {
   pageTitle.textContent = '현재 페이지를 확인할 수 없습니다.';
   currentButton.disabled = true;
+  copyFrameButton.disabled = true;
+  saveFrameButton.disabled = true;
 });

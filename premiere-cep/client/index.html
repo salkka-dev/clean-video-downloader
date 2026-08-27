@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>클린 비디오 스튜디오</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="shell">
+    <header class="brand">
+      <img src="icon.svg" alt="">
+      <div><p>CLEAN VIDEO STUDIO</p><h1>다운로드부터 타임라인까지</h1></div>
+      <span id="engine-badge" class="engine-badge">엔진 확인</span>
+    </header>
+
+    <nav class="tabs" aria-label="도구 선택">
+      <button class="tab active" data-tab="link" type="button">링크 임포트</button>
+      <button class="tab" data-tab="paste" type="button">빠른 붙여넣기</button>
+      <button class="tab" data-tab="still" type="button">스틸</button>
+    </nav>
+
+    <section id="tab-link" class="tab-panel active">
+      <label class="field"><span>영상 링크</span><textarea id="video-url" rows="3" spellcheck="false" placeholder="YouTube · TikTok · Instagram · Vimeo · TVCF 링크"></textarea></label>
+      <div class="grid two">
+        <label class="field"><span>화질</span><select id="quality"><option value="1080">FHD 1080p</option><option value="2160">4K 이하</option><option value="720">HD 720p</option><option value="best">최고 화질</option><option value="audio">오디오 MP3</option></select></label>
+        <label class="field"><span>브라우저 로그인</span><select id="browser-cookies"><option value="none">사용 안 함</option><option value="chrome">Chrome</option><option value="edge">Edge</option></select></label>
+      </div>
+      <div class="grid two">
+        <label class="field"><span>가져오기 위치</span><select id="import-target"><option value="timeline">프로젝트 + 타임라인</option><option value="project">프로젝트만</option></select></label>
+        <label class="field"><span>타임라인 위치</span><select id="insert-position"><option value="playhead">현재 재생 헤드</option><option value="end">시퀀스 끝</option></select></label>
+      </div>
+      <div class="grid three">
+        <label class="field"><span>프로젝트 빈</span><input id="bin-name" value="00 클린 비디오" maxlength="60"></label>
+        <label class="field"><span>비디오</span><select id="video-track"><option value="0">V1</option><option value="1">V2</option><option value="2">V3</option><option value="3">V4</option></select></label>
+        <label class="field"><span>오디오</span><select id="audio-track"><option value="0">A1</option><option value="1">A2</option><option value="2">A3</option><option value="3">A4</option></select></label>
+      </div>
+      <button id="download-button" class="primary" type="button"><span>다운로드 후 가져오기</span><b>↓</b></button>
+    </section>
+
+    <section id="tab-paste" class="tab-panel">
+      <div class="feature-copy"><small>QUICK PASTE</small><h2>복사한 미디어를<br>재생 헤드에 바로.</h2><p>이미지·GIF·영상·오디오·파일·직접 주소와 영상 페이지 링크를 읽어 프로젝트에 정리합니다.</p></div>
+      <button id="paste-button" class="primary" type="button"><span>클립보드에서 가져오기</span><b>⌘V</b></button>
+      <label class="toggle"><input id="auto-paste" type="checkbox"><i></i><span><b>자동 붙여넣기</b><small>새 이미지·파일·미디어 링크를 감지합니다.</small></span></label>
+      <p class="permission-note">macOS에서 자동 감시나 전역 단축키를 사용할 때 입력 모니터링 승인이 한 번 필요할 수 있습니다.</p>
+    </section>
+
+    <section id="tab-still" class="tab-panel">
+      <div class="feature-copy"><small>PROGRAM FRAME</small><h2>현재 프레임을<br>정확한 원본 크기로.</h2><p>화면 영역을 캡처하지 않고 활성 시퀀스 프레임을 직접 내보냅니다.</p></div>
+      <div class="grid two">
+        <label class="field"><span>포맷</span><select id="still-format"><option value="png">PNG</option><option value="jpg">JPG</option></select></label>
+        <label class="field"><span>저장 위치</span><select id="still-destination"><option value="pictures">사진/클린 비디오 스틸</option><option value="project">프로젝트 옆 폴더</option></select></label>
+      </div>
+      <div class="button-row"><button id="save-still" class="secondary" type="button">이미지로 저장</button><button id="copy-still" class="primary compact" type="button">스틸 복사</button></div>
+    </section>
+
+    <section id="status-card" class="status-card" aria-live="polite">
+      <div><span><i></i><b id="status-title">준비됨</b></span><strong id="status-percent">0%</strong></div>
+      <em><i id="progress-bar"></i></em>
+      <p id="status-message">Premiere 프로젝트와 시퀀스를 열어 주세요.</p>
+    </section>
+    <footer><span>앱 설치 불필요 · 로컬 엔진 자동 준비</span><span>v1.0</span></footer>
+  </main>
+  <script src="csinterface-lite.js"></script>
+  <script src="engine.js"></script>
+  <script src="clipboard.js"></script>
+  <script src="panel.js"></script>
+</body>
+</html>

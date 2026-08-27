@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>클린 영상 다운로더</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <main>
+    <header>
+      <img src="icon128.png" alt="">
+      <div><p>CLEAN VIDEO</p><h1>클린 영상 다운로더</h1></div>
+      <span class="ready"><i></i> 단독 실행</span>
+    </header>
+
+    <section class="current-card">
+      <p class="label">현재 페이지</p>
+      <strong id="page-title">페이지 확인 중…</strong>
+      <button id="download-current" type="button">현재 영상 저장 <b>↓</b></button>
+      <p class="hint">영상 재생 후 누르면 인식률이 높아집니다.</p>
+    </section>
+
+    <section class="direct-card">
+      <label for="direct-url">직접 미디어 주소</label>
+      <div><input id="direct-url" type="url" spellcheck="false" placeholder="https://…/video.mp4"><button id="download-url" type="button">저장</button></div>
+    </section>
+
+    <p id="status" class="status" aria-live="polite">데스크톱 프로그램 없이 Chrome에서 바로 저장합니다.</p>
+    <footer>DRM·유료·보호 영상 및 분리 스트리밍은 지원하지 않습니다.</footer>
+  </main>
+  <script src="popup.js"></script>
+</body>
+</html>

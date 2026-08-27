@@ -38,7 +38,10 @@ app.whenReady().then(async () => {
   await render('icon128.svg', 'icon128.png', 128, 128, true);
   await render('promo.html', 'small-promo-440x280.png', 440, 280);
   await render('screenshot.html', 'screenshot-1280x800.png', 1280, 800);
-  writeFileSync(path.join(root, 'extension', 'icon128.png'), require('node:fs').readFileSync(path.join(output, 'icon128.png')));
+  const sourceIcon = require('electron').nativeImage.createFromPath(path.join(output, 'icon128.png'));
+  for (const size of [16, 32, 48, 128]) {
+    writeFileSync(path.join(root, 'extension', `icon${size}.png`), sourceIcon.resize({ width: size, height: size, quality: 'best' }).toPNG());
+  }
   app.quit();
 }).catch(error => {
   console.error(error);

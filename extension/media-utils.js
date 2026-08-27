@@ -33,8 +33,8 @@
     return match ? `.${match[1].toLowerCase()}` : '';
   }
 
-  function suggestFilename(title, url, kind) {
-    const extension = extensionFromUrl(url);
+  function suggestFilename(title, url, kind, forcedExtension) {
+    const extension = extensionFromUrl(url) || (forcedExtension ? `.${String(forcedExtension).replace(/^\./, '').toLowerCase()}` : '');
     if (!extension) return '';
     const base = safeBaseName(title || kind || 'media').replace(/\.[a-z0-9]{2,5}$/i, '');
     return `${base}${extension}`;

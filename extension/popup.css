@@ -1,0 +1,28 @@
+:root { color-scheme: dark; font-family: Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: #edf4ff; background: #07111f; }
+* { box-sizing: border-box; }
+body { width: 360px; margin: 0; background: radial-gradient(circle at 10% 0, rgba(61, 105, 244, .25), transparent 190px), #07111f; }
+button, input { font: inherit; }
+main { padding: 16px; }
+header { display: grid; grid-template-columns: 38px 1fr auto; align-items: center; gap: 10px; padding-bottom: 14px; border-bottom: 1px solid #20314a; }
+header img { width: 38px; height: 38px; }
+header p { margin: 0 0 3px; color: #6f93f5; font-size: 8px; font-weight: 900; letter-spacing: .18em; }
+h1 { margin: 0; font-size: 15px; letter-spacing: -.03em; }
+.ready { display: flex; align-items: center; gap: 5px; color: #88a0bd; font-size: 9px; font-weight: 700; }
+.ready i { width: 7px; height: 7px; border-radius: 50%; background: #39d6aa; box-shadow: 0 0 0 4px rgba(57, 214, 170, .1); }
+section { margin-top: 13px; padding: 13px; border: 1px solid #213754; border-radius: 13px; background: rgba(13, 28, 48, .88); }
+.label, label { display: block; margin: 0 0 7px; color: #7890b0; font-size: 9px; font-weight: 800; }
+.current-card strong { display: block; overflow: hidden; margin-bottom: 11px; color: #e6eefb; font-size: 12px; white-space: nowrap; text-overflow: ellipsis; }
+button { border: 0; border-radius: 9px; color: white; background: #3264e5; font-weight: 800; cursor: pointer; }
+button:hover { filter: brightness(1.08); }
+button:disabled { cursor: default; color: #72819a; background: #1b2d45; }
+#download-current { display: flex; align-items: center; justify-content: space-between; width: 100%; height: 40px; padding: 0 13px; }
+#download-current b { font-size: 16px; }
+.hint { margin: 8px 0 0; color: #586f8f; font-size: 9px; }
+.direct-card div { display: grid; grid-template-columns: 1fr 58px; gap: 7px; }
+input { min-width: 0; height: 36px; padding: 0 10px; border: 1px solid #29415f; border-radius: 8px; outline: none; color: #e8f0fc; background: #091827; font-size: 10px; }
+input:focus { border-color: #5681ef; }
+input::placeholder { color: #4f6480; }
+.status { min-height: 30px; margin: 12px 2px 0; color: #7890af; font-size: 10px; line-height: 1.5; }
+.status.success { color: #59dcb9; }
+.status.error { color: #f18c86; }
+footer { margin-top: 8px; color: #455c79; font-size: 8px; line-height: 1.45; }

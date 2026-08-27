@@ -4,8 +4,9 @@ const ppro = require('premierepro');
 const { entrypoints, shell, storage } = require('uxp');
 const os = require('os');
 
-const { localFileSystem } = storage;
+const { localFileSystem, formats } = storage;
 const SUPPORTED_DOMAINS = ['youtube.com', 'youtu.be', 'vimeo.com', 'instagram.com', 'tvcf.co.kr'];
+const DIRECT_MEDIA_PATTERN = /\.(?:mp4|m4v|mov|webm)(?:$|[?#])/i;
 const MAX_WAIT_MS = 90 * 60 * 1000;
 
 function wait(milliseconds) {
@@ -40,10 +41,42 @@ function validateVideoUrl(value) {
   catch (_) { throw new Error('올바른 영상 링크를 입력해 주세요.'); }
   if (!['http:', 'https:'].includes(parsed.protocol)) throw new Error('http 또는 https 영상 링크만 사용할 수 있습니다.');
   const host = parsed.hostname.toLowerCase();
-  if (!SUPPORTED_DOMAINS.some(domain => host === domain || host.endsWith(`.${domain}`))) {
-    throw new Error('YouTube, Vimeo, Instagram, TVCF 개별 영상 링크를 입력해 주세요.');
+  if (!isDirectMediaUrl(parsed.href) && !SUPPORTED_DOMAINS.some(domain => host === domain || host.endsWith(`.${domain}`))) {
+    throw new Error('직접 MP4·WebM·MOV 주소 또는 지원되는 영상 페이지 링크를 입력해 주세요.');
   }
   return parsed.href;
+}
+
+function isDirectMediaUrl(value) {
+  return /^https:/i.test(String(value || '')) && DIRECT_MEDIA_PATTERN.test(String(value || ''));
+}
+
+function safeMediaName(url, contentType) {
+  let pathname = '';
+  try { pathname = decodeURIComponent(new URL(url).pathname); } catch (_) {}
+  const original = pathname.split('/').pop() || 'clean-video';
+  const clean = original.replace(/[\\/:*?"<>|\u0000-\u001f]/g, '_').replace(/[. ]+$/g, '').slice(0, 90) || 'clean-video';
+  if (/\.(?:mp4|m4v|mov|webm)$/i.test(clean)) return clean;
+  if (/webm/i.test(contentType || '')) return `${clean}.webm`;
+  if (/quicktime/i.test(contentType || '')) return `${clean}.mov`;
+  return `${clean}.mp4`;
+}
+
+async function downloadDirectMedia(url) {
+  updateStatus({ title: '플러그인 단독 다운로드', message: '직접 미디어를 Premiere 임시 폴더에 저장하고 있습니다.', progress: 20 });
+  const response = await fetch(url, { credentials: 'omit' });
+  if (!response.ok) throw new Error(`직접 미디어 다운로드에 실패했습니다. (HTTP ${response.status})`);
+  const contentType = response.headers.get('content-type') || '';
+  if (contentType && !/^(?:video|audio)\//i.test(contentType) && !/octet-stream/i.test(contentType)) {
+    throw new Error('입력한 주소가 직접 미디어 파일을 반환하지 않습니다.');
+  }
+  const bytes = await response.arrayBuffer();
+  if (!bytes.byteLength) throw new Error('빈 미디어 파일이 반환되었습니다.');
+  updateStatus({ title: '플러그인 단독 다운로드', message: '다운로드한 파일을 저장하고 있습니다.', progress: 75 });
+  const temporaryFolder = await localFileSystem.getTemporaryFolder();
+  const file = await temporaryFolder.createFile(safeMediaName(url, contentType), { overwrite: true });
+  await file.write(bytes, { format: formats.binary });
+  return file.nativePath;
 }
 
 function createJobId() {
@@ -186,16 +219,19 @@ async function startWorkflow() {
       videoTrack: document.getElementById('video-track').value,
       audioTrack: document.getElementById('audio-track').value
     };
-    const jobId = createJobId();
-    const protocolUrl = `cleanvideo://premiere?job=${encodeURIComponent(jobId)}&quality=${encodeURIComponent(quality)}&url=${encodeURIComponent(url)}`;
-
-    updateStatus({ title: '데스크톱 앱 연결', message: '클린 영상 다운로더를 실행합니다.', progress: 2 });
-    const opened = await shell.openExternal(protocolUrl, '영상 다운로드와 Premiere 호환 MP4 변환을 위해 클린 영상 다운로더를 실행합니다.');
-    if (opened === false || (typeof opened === 'string' && opened !== '')) {
-      throw new Error('클린 영상 다운로더 실행을 허용해 주세요.');
+    let filePath;
+    if (isDirectMediaUrl(url)) {
+      filePath = await downloadDirectMedia(url);
+    } else {
+      const jobId = createJobId();
+      const protocolUrl = `cleanvideo://premiere?job=${encodeURIComponent(jobId)}&quality=${encodeURIComponent(quality)}&url=${encodeURIComponent(url)}`;
+      updateStatus({ title: '데스크톱 앱 연결', message: '고화질 다운로드와 MP4 변환을 위해 클린 영상 다운로더를 실행합니다.', progress: 2 });
+      const opened = await shell.openExternal(protocolUrl, '영상 다운로드와 Premiere 호환 MP4 변환을 위해 클린 영상 다운로더를 실행합니다.');
+      if (opened === false || (typeof opened === 'string' && opened !== '')) {
+        throw new Error('클린 영상 다운로더 실행을 허용해 주세요.');
+      }
+      filePath = await waitForDownload(jobId);
     }
-
-    const filePath = await waitForDownload(jobId);
     updateStatus({ title: 'Premiere로 가져오는 중', message: '프로젝트에 MP4를 가져오고 타임라인에 추가합니다.', progress: 98 });
     await importAndInsert(filePath, options);
     updateStatus({ title: '타임라인 추가 완료', message: filePath, progress: 100, state: 'success' });
@@ -226,8 +262,10 @@ if (typeof module !== 'undefined') {
     bridgeDirectory,
     findClipByPath,
     importAndInsert,
+    isDirectMediaUrl,
     nativePathToFileUrl,
     normalizeMediaPath,
+    safeMediaName,
     validateVideoUrl
   };
 }

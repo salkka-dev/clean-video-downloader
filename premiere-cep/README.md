@@ -4,7 +4,7 @@
 
 ## 설치
 
-- Windows: 압축을 푼 뒤 `install-windows.bat` 실행
+- Windows: 압축을 푼 뒤 `install-windows.bat` 실행 (v1.0.1부터 한글 Windows 콘솔 출력 개선)
 - macOS: 압축을 푼 뒤 `install-mac.command` 실행
 - Premiere를 다시 시작하고 `창 > 확장 기능(레거시) > 클린 비디오 스튜디오` 선택
 

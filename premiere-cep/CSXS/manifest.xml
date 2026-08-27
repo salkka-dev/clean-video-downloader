@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ExtensionManifest Version="7.0" ExtensionBundleId="kr.cleanvideostudio.cep" ExtensionBundleVersion="1.0.0" ExtensionBundleName="클린 비디오 스튜디오">
+<ExtensionManifest Version="7.0" ExtensionBundleId="kr.cleanvideostudio.cep" ExtensionBundleVersion="1.0.1" ExtensionBundleName="클린 비디오 스튜디오">
   <ExtensionList>
-    <Extension Id="kr.cleanvideostudio.panel" Version="1.0.0" />
+    <Extension Id="kr.cleanvideostudio.panel" Version="1.0.1" />
   </ExtensionList>
   <ExecutionEnvironment>
     <HostList><Host Name="PPRO" Version="[22.0,99.9]" /></HostList>

@@ -10,7 +10,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const source = path.join(root, 'premiere-cep');
 const release = path.join(root, 'release');
 const output = path.join(release, 'Clean-Video-Studio-Premiere.zip');
-const versioned = path.join(release, 'Clean-Video-Studio-Premiere-v1.0.0.zip');
+const versioned = path.join(release, 'Clean-Video-Studio-Premiere-v1.0.1.zip');
 
 fs.mkdirSync(release, { recursive: true });
 for (const file of [output, versioned]) if (fs.existsSync(file)) fs.rmSync(file, { force: true });

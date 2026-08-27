@@ -12,7 +12,17 @@ test('CEP panel supports Premiere 2022+ with its own Node runtime', () => {
   const manifest = read('CSXS/manifest.xml');
   assert.match(manifest, /Host Name="PPRO" Version="\[22\.0,99\.9\]"/);
   assert.match(manifest, /--enable-nodejs/);
+  assert.match(manifest, /ExtensionBundleVersion="1\.0\.1"/);
   assert.match(manifest, /클린 비디오 스튜디오/);
+});
+
+test('Windows installer decodes its PowerShell source as UTF-8', () => {
+  const batch = read('install-windows.bat');
+  const powershell = read('install-windows.ps1');
+  assert.match(batch, /\[Text\.Encoding\]::UTF8\.GetString/);
+  assert.doesNotMatch(batch, /-File\s/i);
+  assert.match(powershell, /\[switch\]\$NoPause/);
+  assert.match(powershell, /\[switch\]\$SkipRegistry/);
 });
 
 test('CEP engine prepares platform tools without calling the desktop app', () => {

@@ -5,7 +5,7 @@ const { entrypoints, shell, storage } = require('uxp');
 const os = require('os');
 
 const { localFileSystem, formats } = storage;
-const SUPPORTED_DOMAINS = ['youtube.com', 'youtu.be', 'vimeo.com', 'instagram.com', 'tvcf.co.kr'];
+const SUPPORTED_DOMAINS = ['youtube.com', 'youtu.be', 'vimeo.com', 'instagram.com', 'tiktok.com', 'tvcf.co.kr'];
 const DIRECT_MEDIA_PATTERN = /\.(?:mp4|m4v|mov|webm)(?:$|[?#])/i;
 const MAX_WAIT_MS = 90 * 60 * 1000;
 

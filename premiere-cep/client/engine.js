@@ -76,6 +76,7 @@
     const page = new URL(pageUrl);
     const match = page.pathname.match(/(?:^|\/)play\/([^/?#]+)/i);
     if (!match) throw new Error('TVCF 개별 영상 재생 링크를 입력해 주세요.');
+    if (!/^[a-z0-9]+-\d+$/i.test(match[1])) throw new Error('이전 TVCF 숫자형 주소입니다. TVCF에서 영상을 다시 열고 새 /play/영문숫자-번호 주소를 복사해 주세요.');
     if (onStatus) onStatus({ stage: 'download', title: 'TVCF 권한 확인 중', message: '선택한 브라우저의 로그인 범위만 사용합니다.', percent: 3 });
     const cookieHeader = exportTvcfCookies(paths, browser);
     const headers = { Referer: pageUrl };

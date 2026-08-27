@@ -21,12 +21,16 @@ const {
 
 test('supported individual links are accepted', () => {
   assert.equal(validateUrls(['https://www.youtube.com/watch?v=abc123']), null);
-  assert.equal(validateUrls(['https://tvcf.co.kr/en/play/978150']), null);
+  assert.equal(validateUrls(['https://www.instagram.com/reel/Chunk8-jurw/']), null);
+  assert.equal(validateUrls(['https://www.tiktok.com/@scout2015/video/6718335390845095173']), null);
+  assert.equal(validateUrls(['https://tvcf.co.kr/ko/play/ai1747-1026574']), null);
   assert.equal(validateUrls(['https://vimeo.com/123456789']), null);
 });
 
 test('generic and unsupported links are rejected', () => {
   assert.ok(validateUrls(['https://youtube.com/']));
+  assert.ok(validateUrls(['https://www.tiktok.com/@tiktok']));
+  assert.ok(validateUrls(['https://tvcf.co.kr/en/play/978150']));
   assert.ok(validateUrls(['https://example.com/video']));
   assert.ok(validateUrls(['file:///tmp/video.mp4']));
 });

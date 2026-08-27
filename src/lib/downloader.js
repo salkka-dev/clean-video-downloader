@@ -6,7 +6,7 @@ const { spawn, spawnSync } = require('child_process');
 const { optimizeForPremiere } = require('./premiere');
 
 const USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/140.0 Safari/537.36';
-const ALLOWED_DOMAINS = ['youtube.com', 'youtu.be', 'vimeo.com', 'instagram.com', 'tvcf.co.kr'];
+const ALLOWED_DOMAINS = ['youtube.com', 'youtu.be', 'vimeo.com', 'instagram.com', 'tiktok.com', 'tvcf.co.kr'];
 
 function isSite(value, domain) {
   try {
@@ -31,7 +31,11 @@ function validateUrls(urls) {
     else if (host === 'youtube.com' || host.endsWith('.youtube.com')) specific = value.searchParams.has('v') || /^\/(shorts|live|embed)\//.test(pathname);
     else if (host === 'vimeo.com' || host.endsWith('.vimeo.com')) specific = pathname.split('/').some(part => /^\d+$/.test(part));
     else if (host === 'instagram.com' || host.endsWith('.instagram.com')) specific = /^\/(p|reel|tv)\//.test(pathname);
-    else if (host === 'tvcf.co.kr' || host.endsWith('.tvcf.co.kr')) specific = /^\/(?:[a-z]{2}\/)?play\//.test(pathname);
+    else if (host === 'tiktok.com' || host.endsWith('.tiktok.com')) {
+      specific = /^(?:\/@[^/]+\/video\/\d+|\/(?:t|share\/video)\/[^/]+)/.test(pathname)
+        || (/^(?:vm|vt)\.tiktok\.com$/.test(host) && pathname.length > 1);
+    }
+    else if (host === 'tvcf.co.kr' || host.endsWith('.tvcf.co.kr')) specific = /^\/(?:[a-z]{2}\/)?play\/[a-z0-9]+-\d+/i.test(pathname);
     if (!specific) return raw;
   }
   return null;
@@ -76,6 +80,7 @@ async function resolveTvcfSource(pageUrl, quality, cookieHeader = '') {
   const match = page.pathname.match(/(?:^|\/)play\/([^/?#]+)/i);
   if (!match) throw new Error('TVCF 개별 영상 재생 주소가 아닙니다.');
   const playKey = match[1];
+  if (!/^[a-z0-9]+-\d+$/i.test(playKey)) throw new Error('이전 TVCF 숫자형 주소입니다. TVCF에서 영상을 다시 열고 새 /play/영문숫자-번호 주소를 복사해 주세요.');
   const endpoint = `https://tvcf.co.kr/api/main/v1/play/nidx/${encodeURIComponent(playKey)}`;
   const headers = { 'User-Agent': USER_AGENT, Referer: pageUrl };
   if (cookieHeader) headers.Cookie = cookieHeader;

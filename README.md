@@ -4,7 +4,7 @@ Windows와 macOS에서 권한 있는 온라인 영상을 저장하고 Premiere P
 
 ## 주요 기능
 
-- YouTube, Vimeo, Instagram, TVCF 개별 영상 링크
+- YouTube, Vimeo, Instagram, TikTok, TVCF 개별 영상 링크
 - TVCF 앱 내 로그인 세션과 계정 권한 범위의 1080p/4K 스트림 확인
 - H.264 / AAC 48kHz / `yuv420p` / Fast Start MP4 변환
 - 여러 링크 중복 제거 및 순차 처리

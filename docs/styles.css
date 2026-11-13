@@ -163,3 +163,21 @@ h1 em { color: #5f8cff; font-style: normal; }
 @media (max-width: 880px) { .nav > div a:not(.nav-cta) { display: none; }.hero { grid-template-columns: 1fr; gap: 50px; min-height: auto; padding-top: 70px; }.product-window { max-width: 600px; transform: none; }.proof { grid-template-columns: repeat(2,1fr); }.proof span:nth-child(3) { border-left: 0; border-top: 1px solid #14243a; }.proof span:nth-child(4) { border-top: 1px solid #14243a; }.about,.section-heading,.install,.premiere-plugin,.guide-heading { grid-template-columns: 1fr; gap: 45px; }.premiere-panel-preview { max-width: 620px; }.feature-grid { grid-template-columns: 1fr; }.premiere-guide-grid { grid-template-columns: repeat(2,1fr); }.hub-hero { min-height: 610px; padding-top: 70px; }.tool-grid { grid-template-columns: 1fr; }.tool-copy > p:not(.eyebrow) { min-height: 0; }.hub-flow-grid { grid-template-columns: 1fr; }.hub-flow-grid article { min-height: 130px; padding: 25px 0; border-right: 0; border-bottom: 1px solid #1b2e49; }.hub-flow-grid strong { margin-top: 22px; } }
 @media (max-width: 560px) { main,.nav,.site-footer { width: min(100% - 28px, 1180px); }.download-actions { grid-template-columns: 1fr; }.download.quiet,.download.plugin-download { grid-column: auto; flex-direction: column; align-items:flex-start; }.hero { padding-top: 45px; }.mock-body { padding: 17px; }.premiere-plugin,.premiere-guide { padding: 80px 0; }.premiere-actions { align-items: flex-start; flex-direction: column; }.premiere-actions a { width: 100%; }.premiere-panel-preview { padding: 15px; }.premiere-guide-grid,.path-help { grid-template-columns: 1fr; }.premiere-guide-grid article { min-height: 205px; }.notice { grid-template-columns: 1fr; gap: 10px; }.hub-hero { min-height: 570px; padding: 55px 0; }.hub-hero h1 { font-size: 15vw; }.tool-showcase { padding: 80px 0; }.tool-visual { height: 210px; }.tool-copy { padding: 27px 22px; }.tool-copy h2 { font-size: clamp(30px, 9.2vw, 42px); }.hub-flow { padding: 80px 0 95px; } }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; }.download { transition: none; } }
+
+/* 촬영 날씨 보드 카드 */
+.weather-card { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.weather-card .tool-card-top { grid-column: 1 / -1; }
+.weather-card .tool-visual { height: auto; min-height: 320px; border-bottom: 0; border-right: 1px solid #1a2d49; }
+.weather-visual { background: radial-gradient(circle at 80% 12%, rgba(255,200,30,.17), transparent 15rem), #0a1626; }
+.weather-visual > strong { position: absolute; right: 22px; top: 18px; padding: 6px 8px; background: #ffc81e; color: #101210; font: 800 9px ui-monospace, monospace; }
+.mini-board { display: grid; grid-template-columns: 64px repeat(6, minmax(0, 1fr)); width: 76%; overflow: hidden; border: 1px solid #2b456b; border-radius: 13px; background: #0b1c31; box-shadow: 0 28px 55px rgba(0,0,0,.28); color: #5f7a9c; font: 700 9px/1 ui-monospace, monospace; }
+.mini-board > * { display: grid; place-items: center; height: 38px; border-right: 1px solid #1c3150; border-bottom: 1px solid #1c3150; }
+.mini-board > :nth-child(7n) { border-right: 0; }
+.mini-board > :nth-last-child(-n+7) { border-bottom: 0; }
+.mini-board b { justify-items: start; padding-left: 11px; color: #a4b8d4; font-weight: 800; }
+.mini-board i::before { content: ''; display: block; width: 10px; height: 10px; border-radius: 50%; background: #ffc81e; }
+.mini-board i.c::before { background: #74849b; }
+.mini-board i.r::before { width: 9px; height: 11px; border-radius: 50% 50% 50% 50% / 30% 30% 70% 70%; background: #4c8dff; }
+.weather-card .tool-link { background: #ffc81e; color: #101210; }
+@media (max-width: 880px) { .weather-card { grid-template-columns: 1fr; }.weather-card .tool-visual { height: 250px; min-height: 0; border-right: 0; border-bottom: 1px solid #1a2d49; } }
+@media (max-width: 560px) { .weather-card .tool-visual { height: 210px; }.mini-board { width: 86%; margin-top: 24px; grid-template-columns: 56px repeat(6, minmax(0, 1fr)); }.mini-board > * { height: 33px; }.weather-visual > strong { top: 11px; right: 14px; } }

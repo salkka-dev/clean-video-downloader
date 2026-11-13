@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="영상 다운로드와 촬영지 리스트업을 한곳에서 제공하는 무료 제작 도구함">
+  <meta name="description" content="영상 다운로드, 촬영지 리스트업, 촬영 날씨 비교를 한곳에서 제공하는 무료 제작 도구함">
   <meta name="theme-color" content="#07111f">
   <meta property="og:title" content="제작 도구함 — Creator Toolkit">
   <meta property="og:description" content="다운로드부터 촬영지 후보 정리까지, 제작 업무를 더 빠르게.">
@@ -16,6 +16,7 @@
     <div>
       <a href="downloader.html">영상 다운로더</a>
       <a href="https://loc-list-studio.junsuchoi.chatgpt.site">로케이션 리스트업</a>
+      <a href="weather.html">촬영 날씨</a>
       <a class="nav-cta" href="#tools">도구 선택</a>
     </div>
   </nav>
@@ -30,8 +31,8 @@
 
     <section id="tools" class="tool-showcase" aria-labelledby="tools-title">
       <div class="section-heading hub-heading">
-        <div><p class="eyebrow">TWO TOOLS, ONE WORKFLOW</p><h2 id="tools-title">지금 필요한 작업을 선택하세요.</h2></div>
-        <p>설치형 데스크톱 도구와 공유 가능한 웹 리스트를 한곳에서 이용할 수 있습니다.</p>
+        <div><p class="eyebrow">THREE TOOLS, ONE WORKFLOW</p><h2 id="tools-title">지금 필요한 작업을 선택하세요.</h2></div>
+        <p>설치형 데스크톱 도구와 공유 가능한 웹 리스트, 촬영 날씨 비교를 한곳에서 이용할 수 있습니다.</p>
       </div>
 
       <div class="tool-grid">
@@ -62,6 +63,25 @@
             <a class="tool-link" href="https://loc-list-studio.junsuchoi.chatgpt.site"><span>로케이션 리스트 만들기</span><b>→</b></a>
           </div>
         </article>
+        <article class="tool-card weather-card">
+          <div class="tool-card-top"><span>03</span><b>FORECAST BOARD</b></div>
+          <div class="tool-visual weather-visual" aria-hidden="true">
+            <strong>16 DAYS</strong>
+            <div class="mini-board">
+              <span></span><span>금</span><span>토</span><span>일</span><span>월</span><span>화</span><span>수</span>
+              <b>ECMWF</b><i></i><i class="r"></i><i></i><i class="c"></i><i class="r"></i><i></i>
+              <b>GFS</b><i class="c"></i><i class="r"></i><i></i><i></i><i class="r"></i><i class="c"></i>
+              <b>ICON</b><i></i><i class="r"></i><i></i><i class="c"></i><i class="c"></i><i></i>
+            </div>
+          </div>
+          <div class="tool-copy">
+            <p class="eyebrow">SHOOT WEATHER BOARD</p>
+            <h2>촬영 날씨 보드</h2>
+            <p>여러 나라 기상청의 예보모델을 한 표에 나란히 놓고, 촬영일 날씨를 16일 앞까지 지역별로 비교합니다.</p>
+            <ul><li>예보 채널 8개 비교</li><li>강수 · 바람 · 구름 · 일출일몰</li><li>촬영지 지역 저장</li></ul>
+            <a class="tool-link" href="weather.html"><span>촬영 날씨 확인하기</span><b>→</b></a>
+          </div>
+        </article>
       </div>
     </section>
 
@@ -78,7 +98,7 @@
 
   <footer class="site-footer">
     <span>© 2026 CREATOR TOOLKIT</span>
-    <div><a href="downloader.html">다운로더</a><a href="https://loc-list-studio.junsuchoi.chatgpt.site">리스트업</a></div>
+    <div><a href="downloader.html">다운로더</a><a href="https://loc-list-studio.junsuchoi.chatgpt.site">리스트업</a><a href="weather.html">날씨</a></div>
   </footer>
 </body>
 </html>
